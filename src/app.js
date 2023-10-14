@@ -44,15 +44,15 @@ app.get("/products/:id", async (req, res) => {
   });
 
 app.post("/products", async (req, res) => {
-    const { name, cost, sale, description, stock } = req.body;
-    if (typeof name !== "string") {
+    const { name, cost, sale, description, stock, image } = req.body;
+    if (typeof name !== "string" || typeof cost !== "number" || typeof sale !== "number" || typeof description !== "string" || typeof stock !== "number" || typeof image !== "string") {
       return res.status(400).json({
         message: "Peticion invalida",
       });
     }
     try {
-      const result = await pool.query("INSERT INTO productos(name, cost, sale, description, stock) VALUES($1, $2, $3, $4, $5)", [
-        name,cost, sale, description, stock
+      const result = await pool.query("INSERT INTO productos(name, cost, sale, description, stock, image) VALUES($1, $2, $3, $4, $5, $6)", [
+        name,cost, sale, description, stock, image
       ]);
       res.status(201).json({
         message: "Producto creado exitosamente",
@@ -66,8 +66,8 @@ app.post("/products", async (req, res) => {
 
   app.put("/products/:id", async (req, res) => {
     const id = req.params.id;
-    const { name, cost, sale, description, stock } = req.body;
-    if (typeof name !== "string" || typeof cost !== "number" || typeof sale !== "number" || typeof description !== "string" || typeof stock !== "number") {
+    const { name, cost, sale, description, stock, image } = req.body;
+    if (typeof name !== "string" || typeof cost !== "number" || typeof sale !== "number" || typeof description !== "string" || typeof stock !== "number" || typeof image !== "string") {
       return res.status(400).json({
         message: "Peticion invalida",
       });
@@ -80,12 +80,13 @@ app.post("/products", async (req, res) => {
         cost = $2,
         sale = $3,
         description = $4,
-        stock = $5	
-        WHERE id = $6;`,
-        [name, cost, sale, description, stock, id]
+        stock = $5
+        image = $6	
+        WHERE id = $7;`,
+        [name, cost, sale, description, stock, image, id]
       );
       res.json({
-        message: "Name actualizada exitosamente",
+        message: "Producto actualizado exitosamente",
         body: result.rows[0],
       });
     } catch (error) {
