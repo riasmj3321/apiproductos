@@ -95,7 +95,7 @@ app.put("/products/:id", async (req, res) => {
         cost = $2,
         sale = $3,
         description = $4,
-        stock = $5
+        stock = $5,
         image = $6	
         WHERE id = $7 RETURNING *`,
       [name, cost, sale, description, stock, image, id]
@@ -117,11 +117,6 @@ app.delete("/products/:id", async (req, res) => {
     const result = await pool.query("DELETE FROM productos WHERE id = $1", [
       id,
     ]);
-    res.json({
-      message: "Campo Elimiinado Exitosamente",
-      body: result.rows[0],
-    });
-
     if (result.rowCount === 0) {
       return res.status(404).json({
         message: "No se encontro el recurso",
